@@ -1,0 +1,9 @@
+displayName: "LPad"
+name: "LPad"
+author: "NgLam2911"
+main: "nglam2911.lpad.LPad"
+description: "Utility mod for Mindustry Landing Pad"
+version: 0.0.1
+minGameVersion: 157
+java: true
+hidden: true
