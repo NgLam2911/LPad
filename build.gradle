@@ -35,6 +35,8 @@ ext{
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
 
+def archiveName = base.archivesName.orElse(project.name).get()
+
 dependencies{
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
@@ -66,7 +68,7 @@ task jarAndroid{
         def d8 = isWindows ? "d8.bat" : "d8"
 
         //dex and desugar files - this requires d8 in your PATH
-        "$d8 $dependencies --min-api 14 --output ${base.archivesName}Android.jar ${base.archivesName}Desktop.jar"
+        "$d8 $dependencies --min-api 14 --output ${archiveName}Android.jar ${archiveName}Desktop.jar"
                 .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
@@ -74,7 +76,7 @@ task jarAndroid{
 jar{
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
-    archiveFileName = "${base.archivesName}Desktop.jar"
+    archiveFileName = "${archiveName}Desktop.jar"
 
     from{
         configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
@@ -93,14 +95,14 @@ jar{
 task deploy(type: Jar){
     dependsOn jarAndroid
     dependsOn jar
-    archiveFileName = "${base.archivesName}.jar"
+    archiveFileName = "${archiveName}.jar"
 
-    from{ [zipTree("$buildDir/libs/${base.archivesName}Desktop.jar"), zipTree("$buildDir/libs/${base.archivesName}Android.jar")] }
+    from{ [zipTree("$buildDir/libs/${archiveName}Desktop.jar"), zipTree("$buildDir/libs/${archiveName}Android.jar")] }
 
     doLast{
         delete{
-            delete "$buildDir/libs/${base.archivesName}Desktop.jar"
-            delete "$buildDir/libs/${base.archivesName}Android.jar"
+            delete "$buildDir/libs/${archiveName}Desktop.jar"
+            delete "$buildDir/libs/${archiveName}Android.jar"
         }
     }
 }
